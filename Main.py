@@ -1,25 +1,72 @@
-class Solution:     def 
-__init__(self, size):         self.size 
-= size         self.lst =  
-[None]*size         self.queue = [None]*size         self.top = -1         self.rear = -1         self.front = 
--1     def 
-is_stack_empty(self):         if self.top == -1:             return 1         else:             return 0   
-   
-def is_queue_empty(self):         if self.front==-1 
-or self.front>self.rear:   
-            return 1         else:              
-return 0     def  is_stack_full(self):         if self.top == (self.size - 1):   
-            return 1         else :              
-return  0  	  	  	  	 
- def is_queue_full(self):         if self.rear==(self.size-1):   
-            return 1          else:             return 0     def  push_character(self, character):         if not self.is_stack_full():             self.top+=1             self.lst[self.top]=character     def enqueue_character(self, character):         if not self.is_queue_full():             if self.front==-1:                 self.front=0             self.rear+=1              self.queue[self.rear]=character   
-               
-    def pop_character(self):         if  not  	self.is_stack_empty():             t=self.lst[self.top]             del self.lst[self.top]             self.top=1             return t   
-    def dequeue_character(self):         if 
-not 	self.is_queue_empty():              r=self.queue[0]             del 
-self.queue[0]             self.front+=1             return r   
-           
-text = input() length_of_text = len(text) solution = Solution(length_of_text) for index in range(length_of_text):     solution.push_character(text[index])     
-solution.enqueue_character(text[index]) is_palindrome = True a="" b="" for i in range(solution.front,solution.rear+1):      
-a+=solution.pop_character()     b+=solution.dequeue_character() if a!=b:      is_palindrome = False else:      is_palindrome = True if is_palindrome:   print("The word, " + text + ", is a palindrome.") 
-else:     print("The word, " + text + ", is not a palindrome.")   
+class MyCircularQueue:
+    def __init__(self, size):
+        self.queue = [0] * size
+        self.size = size
+        self.front, self.rear = -1, -1
+
+    def enqueue(self, value):
+        if self.is_full():
+            return False
+        if self.front == -1:
+            self.front, self.rear = 0, 0
+        else:
+            self.rear = (self.rear + 1) % self.size
+        self.queue[self.rear] = value
+        return True
+
+    def dequeue(self):
+        if self.is_empty(): 
+            return False
+        if self.front == self.rear:
+            self.front, self.rear = -1, -1
+        else:
+            self.front = (self.front + 1) % self.size
+        return True
+
+    def get_front(self):
+        if not self.is_empty():
+            return self.queue[self.front]
+        return -1
+
+    def get_rear(self):
+        if not self.is_empty():
+            return self.queue[self.rear]
+        return -1
+
+    def is_empty(self):
+        return self.front == -1
+
+    def is_full(self):
+        return (self.front == 0 and self.rear == (self.size - 1)) or (self.front == (self.rear + 1) % self.size)
+
+
+# Do not change the following codeT
+operations = []
+for specific_operation in input().split(','):
+    operations.append(specific_operation.strip())
+data = []
+for item in input().split(','):
+    item = item.strip()
+    if item == '-':
+        data.append([])
+    else:
+        data.append([int(item)])
+obj = MyCircularQueue(data[0][0])
+result = []
+for i in range(len(operations)):
+    if i == 0:
+        result.append(None)
+    elif operations[i] == "enqueue":
+        result.append(obj.enqueue(data[i][0]))
+    elif operations[i] == "get_rear":
+        result.append(obj.get_rear())
+    elif operations[i] == "get_front":
+        result.append(obj.get_front())
+    elif operations[i] == "dequeue":
+        result.append(obj.dequeue())
+    elif operations[i] == "is_full":
+        result.append(obj.is_full())
+    elif operations[i] == "is_empty":
+        result.append(obj.is_empty())
+
+print(result)
